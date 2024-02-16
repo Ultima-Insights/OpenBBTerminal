@@ -1,4 +1,5 @@
 """Test etf extension."""
+
 import pytest
 from extensions.tests.conftest import parametrize
 from openbb_core.app.model.obbject import OBBject
@@ -69,6 +70,7 @@ def test_etf_historical(params, obb):
     [
         ({"symbol": "IOO", "provider": "fmp"}),
         ({"symbol": "MISL", "provider": "fmp"}),
+        ({"symbol": "QQQ", "provider": "yfinance"}),
     ],
 )
 @pytest.mark.integration
@@ -163,7 +165,10 @@ def test_etf_holdings(params, obb):
 
 @parametrize(
     "params",
-    [({"symbol": "SPY,VOO,QQQ,IWM,IWN,GOVT,JNK", "provider": "fmp"})],
+    [
+        ({"symbol": "SPY,VOO,QQQ,IWM,IWN,GOVT,JNK", "provider": "fmp"}),
+        ({"symbol": "SPY,VOO,QQQ,IWM,IWN,GOVT,JNK", "provider": "finviz"}),
+    ],
 )
 @pytest.mark.integration
 def test_etf_price_performance(params, obb):
@@ -250,41 +255,15 @@ def test_etf_holdings_performance(params, obb):
 
 @parametrize(
     "params",
-    [({"sort": "desc", "limit": 10})],
+    [
+        ({"symbol": "SPY,VOO,QQQ,IWM,IWN", "provider": "fmp"}),
+    ],
 )
 @pytest.mark.integration
-def test_etf_discovery_gainers2(params, obb):
+def test_etf_equity_exposure(params, obb):
     params = {p: v for p, v in params.items() if v}
 
-    result = obb.etf.discovery.gainers(**params)
-    assert result
-    assert isinstance(result, OBBject)
-    assert len(result.results) > 0
-
-
-@parametrize(
-    "params",
-    [({"sort": "desc", "limit": 10})],
-)
-@pytest.mark.integration
-def test_etf_discovery_losers2(params, obb):
-    params = {p: v for p, v in params.items() if v}
-
-    result = obb.etf.discovery.losers(**params)
-    assert result
-    assert isinstance(result, OBBject)
-    assert len(result.results) > 0
-
-
-@parametrize(
-    "params",
-    [({"sort": "desc", "limit": 10})],
-)
-@pytest.mark.integration
-def test_etf_discovery_active2(params, obb):
-    params = {p: v for p, v in params.items() if v}
-
-    result = obb.etf.discovery.active(**params)
+    result = obb.etf.equity_exposure(**params)
     assert result
     assert isinstance(result, OBBject)
     assert len(result.results) > 0

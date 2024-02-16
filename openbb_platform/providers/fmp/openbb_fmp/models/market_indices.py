@@ -9,6 +9,7 @@ from openbb_core.provider.standard_models.market_indices import (
     MarketIndicesData,
     MarketIndicesQueryParams,
 )
+from openbb_core.provider.utils.descriptions import DATA_DESCRIPTIONS
 from openbb_core.provider.utils.helpers import get_querystring
 from openbb_fmp.utils.helpers import get_data_many
 from pydantic import Field, NonNegativeInt
@@ -25,9 +26,9 @@ class FMPMarketIndicesQueryParams(MarketIndicesQueryParams):
     timeseries: Optional[NonNegativeInt] = Field(
         default=None, description="Number of days to look back."
     )
-    interval: Literal[
-        "1min", "5min", "15min", "30min", "1hour", "4hour", "1day"
-    ] = Field(default="1day", description="Data granularity.")
+    interval: Literal["1min", "5min", "15min", "30min", "1hour", "4hour", "1day"] = (
+        Field(default="1day", description="Data granularity.")
+    )
     sort: Literal["asc", "desc"] = Field(
         default="desc", description="Sort the data in ascending or descending order."
     )
@@ -37,7 +38,7 @@ class FMPMarketIndicesData(MarketIndicesData):
     """FMP Market Indices Data."""
 
     adj_close: Optional[float] = Field(
-        description="Adjusted Close Price of the symbol.",
+        description=DATA_DESCRIPTIONS.get("adj_close", ""),
         default=None,
     )
     unadjusted_volume: Optional[float] = Field(

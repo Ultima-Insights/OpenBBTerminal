@@ -1,6 +1,5 @@
 """FMP Cryptos Historical Price Model."""
 
-
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
@@ -10,6 +9,7 @@ from openbb_core.provider.standard_models.crypto_historical import (
     CryptoHistoricalData,
     CryptoHistoricalQueryParams,
 )
+from openbb_core.provider.utils.descriptions import DATA_DESCRIPTIONS
 from openbb_core.provider.utils.helpers import get_querystring
 from openbb_fmp.utils.helpers import get_data_many
 from pydantic import Field, NonNegativeInt
@@ -24,20 +24,21 @@ class FMPCryptoHistoricalQueryParams(CryptoHistoricalQueryParams):
     """
 
     __alias_dict__ = {"start_date": "from", "end_date": "to"}
+    __json_schema_extra__ = {"symbol": ["multiple_items_allowed"]}
 
     timeseries: Optional[NonNegativeInt] = Field(
         default=None, description="Number of days to look back."
     )
-    interval: Literal[
-        "1min", "5min", "15min", "30min", "1hour", "4hour", "1day"
-    ] = Field(default="1day", description="Data granularity.")
+    interval: Literal["1min", "5min", "15min", "30min", "1hour", "4hour", "1day"] = (
+        Field(default="1day", description="Data granularity.")
+    )
 
 
 class FMPCryptoHistoricalData(CryptoHistoricalData):
     """FMP Crypto Historical Price Data."""
 
     adj_close: Optional[float] = Field(
-        default=None, description="Adjusted Close Price of the symbol."
+        default=None, description=DATA_DESCRIPTIONS.get("adj_close", "")
     )
     unadjusted_volume: Optional[float] = Field(
         default=None, description="Unadjusted volume of the symbol."

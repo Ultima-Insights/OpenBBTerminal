@@ -1,4 +1,5 @@
 """Yahoo Finance Currency Price Model."""
+
 # ruff: noqa: SIM105
 
 
@@ -24,6 +25,8 @@ class YFinanceCurrencyHistoricalQueryParams(CurrencyHistoricalQueryParams):
 
     Source: https://finance.yahoo.com/currencies/
     """
+
+    __json_schema_extra__ = {"symbol": ["multiple_items_allowed"]}
 
     interval: Optional[INTERVALS] = Field(default="1d", description="Data granularity.")
     period: Optional[PERIODS] = Field(

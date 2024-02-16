@@ -26,9 +26,9 @@ class TiingoCryptoHistoricalQueryParams(CryptoHistoricalQueryParams):
         "end_date": "endDate",
     }
 
-    interval: Literal[
-        "1min", "5min", "15min", "30min", "1hour", "4hour", "1day"
-    ] = Field(default="1day", description="Data granularity.", alias="resampleFreq")
+    interval: Literal["1min", "5min", "15min", "30min", "1hour", "4hour", "1day"] = (
+        Field(default="1day", description="Data granularity.", alias="resampleFreq")
+    )
 
     exchanges: Optional[List[str]] = Field(
         default=None,
@@ -43,7 +43,9 @@ class TiingoCryptoHistoricalData(CryptoHistoricalData):
     """Tiingo Crypto Historical Price Data."""
 
     transactions: Optional[int] = Field(
-        default=None, description="Number of trades.", alias="tradesDone"
+        default=None,
+        description="Number of transactions for the symbol in the time period.",
+        alias="tradesDone",
     )
 
     volume_notional: Optional[float] = Field(
@@ -79,7 +81,7 @@ class TiingoCryptoHistoricalFetcher(
 
         return TiingoCryptoHistoricalQueryParams(**transformed_params)
 
-    # pylint: disable=protected-access
+    # pylint: disable=protected-access,unused-argument
     @staticmethod
     def extract_data(
         query: TiingoCryptoHistoricalQueryParams,

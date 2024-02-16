@@ -1,5 +1,6 @@
 """Tests for the OBBject class."""
-from unittest.mock import MagicMock, patch
+
+from unittest.mock import MagicMock
 
 import pandas as pd
 import pytest
@@ -16,7 +17,7 @@ def test_OBBject():
 
 def test_fields():
     """Smoke test."""
-    fields = OBBject.__fields__.keys()
+    fields = OBBject.model_fields.keys()
 
     assert "results" in fields
     assert "provider" in fields
@@ -219,6 +220,43 @@ def test_to_dataframe(results, expected_df):
 
 
 @pytest.mark.parametrize(
+    "results, index, sort_by",
+    [
+        # Test case 1: Normal results with "date" column
+        (
+            [{"date": "2023-07-30", "value": 10}, {"date": "2023-07-31", "value": 20}],
+            "date",
+            "value",
+        ),
+        # Test case 2: List of Data
+        (
+            [
+                MockData(x=0, y=2),
+                MockData(x=1, y=3),
+                MockData(x=2, y=0),
+                MockData(x=3, y=1),
+                MockData(x=4, y=6),
+            ],
+            "x",
+            "y",
+        ),
+    ],
+)
+def test_to_dataframe_w_args(results, index, sort_by):
+    """Test helper."""
+    # Arrange
+    co = OBBject(results=results)
+
+    # Act and Assert
+    result = co.to_dataframe(index=index, sort_by=sort_by)
+    assert isinstance(result, pd.DataFrame)
+    assert result.index.name == index
+
+    # check if dataframe is properly sorted
+    assert result[sort_by].is_monotonic_increasing
+
+
+@pytest.mark.parametrize(
     "results, expected_dict",
     [  # Case 1: Normal results with "date" column
         (
@@ -283,45 +321,6 @@ def test_to_dict(results, expected_dict):
         assert str(exc_info.value) == str(expected_dict)
 
 
-@patch("openbb_core.app.model.obbject.OBBject.to_dataframe")
-@patch("openbb_core.app.charting_service.ChartingService")
-def test_to_chart_with_new_chart(
-    mock_charting_service,
-    mock_to_dataframe,
-):
-    """Test helper."""
-
-    def get_mock_dataframe():
-        data = {
-            "col1": [1, 2, 3],
-            "col2": ["a", "b", "c"],
-            "col3": [True, False, True],
-        }
-
-        return pd.DataFrame(data)
-
-    # Arrange
-    mock_instance = OBBject()
-    mock_charting_service_instance = mock_charting_service.return_value
-    mock_charting_service_instance.to_chart.return_value = Chart(
-        content={"content": "some_new_content"}, fig={"fig": "some_mock_fig"}
-    )
-    mock_to_dataframe.return_value = get_mock_dataframe()
-
-    # Act
-    result = mock_instance.to_chart()
-
-    # Assert
-    assert result == {"fig": "some_mock_fig"}
-    assert mock_instance.chart.content == {"content": "some_new_content"}
-
-    # Ensure self.to_dataframe() was called
-    mock_to_dataframe.assert_called_once()
-
-    # Ensure ChartingService was called with the correct parameters
-    mock_charting_service_instance.to_chart.assert_called_once()
-
-
 def test_show_chart_exists():
     """Test helper."""
     mock_instance = OBBject()
@@ -334,7 +333,7 @@ def test_show_chart_exists():
     mock_instance.show()
 
     # Assert
-    mock_instance.chart.fig.show.assert_called_once()
+    mock_instance.chart.fig.show.assert_called_once()  # pylint: disable=no-member
 
 
 def test_show_chart_no_chart():

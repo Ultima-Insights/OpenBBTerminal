@@ -1,6 +1,5 @@
 """Nasdaq Economic Calendar Model."""
 
-
 import html
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta
@@ -22,6 +21,8 @@ class NasdaqEconomicCalendarQueryParams(EconomicCalendarQueryParams):
 
     Source: https://www.nasdaq.com/market-activity/economic-calendar
     """
+
+    __json_schema_extra__ = {"country": ["multiple_items_allowed"]}
 
     country: Optional[Union[str, List[str]]] = Field(
         default=None,
@@ -92,6 +93,7 @@ class NasdaqEconomicCalendarFetcher(
 
         return NasdaqEconomicCalendarQueryParams(**transformed_params)
 
+    # pylint: disable=unused-argument
     @staticmethod
     def extract_data(
         query: NasdaqEconomicCalendarQueryParams,
@@ -114,11 +116,13 @@ class NasdaqEconomicCalendarFetcher(
             response = [
                 {
                     **{k: v for k, v in item.items() if k != "gmt"},
-                    "date": f"{date} 00:00"
-                    if item.get("gmt") == "All Day"
-                    else f"{date} {item.get('gmt', '')}".replace(
-                        "Tentative", "00:00"
-                    ).replace("24H", "00:00"),
+                    "date": (
+                        f"{date} 00:00"
+                        if item.get("gmt") == "All Day"
+                        else f"{date} {item.get('gmt', '')}".replace(
+                            "Tentative", "00:00"
+                        ).replace("24H", "00:00")
+                    ),
                 }
                 for item in response
             ]
@@ -141,11 +145,12 @@ class NasdaqEconomicCalendarFetcher(
 
         return data
 
+    # pylint: disable=unused-argument
     @staticmethod
     def transform_data(
-        query: NasdaqEconomicCalendarQueryParams,  # pylint: disable=unused-argument
+        query: NasdaqEconomicCalendarQueryParams,
         data: List[Dict],
-        **kwargs: Any,  # pylint: disable=unused-argument
+        **kwargs: Any,
     ) -> List[NasdaqEconomicCalendarData]:
         """Return the transformed data."""
         return [NasdaqEconomicCalendarData.model_validate(d) for d in data]

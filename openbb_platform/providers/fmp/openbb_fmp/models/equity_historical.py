@@ -9,6 +9,7 @@ from openbb_core.provider.standard_models.equity_historical import (
     EquityHistoricalData,
     EquityHistoricalQueryParams,
 )
+from openbb_core.provider.utils.descriptions import DATA_DESCRIPTIONS
 from openbb_core.provider.utils.helpers import (
     ClientResponse,
     amake_requests,
@@ -25,6 +26,7 @@ class FMPEquityHistoricalQueryParams(EquityHistoricalQueryParams):
     """
 
     __alias_dict__ = {"start_date": "from", "end_date": "to"}
+    __json_schema_extra__ = {"symbol": ["multiple_items_allowed"]}
 
     limit: Optional[NonNegativeInt] = Field(
         default=None,
@@ -43,7 +45,7 @@ class FMPEquityHistoricalData(EquityHistoricalData):
         default=None, description="Human readable format of the date."
     )
     adj_close: Optional[float] = Field(
-        default=None, description="Adjusted Close Price of the symbol."
+        default=None, description=DATA_DESCRIPTIONS.get("adj_close", "")
     )
     unadjusted_volume: Optional[float] = Field(
         default=None, description="Unadjusted volume of the symbol."

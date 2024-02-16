@@ -1,6 +1,5 @@
 """Executive Compensation Standard Model."""
 
-
 from datetime import (
     date as dateType,
     datetime,
@@ -21,14 +20,20 @@ class ExecutiveCompensationQueryParams(QueryParams):
     """Executive Compensation Query."""
 
     symbol: str = Field(description=QUERY_DESCRIPTIONS.get("symbol", ""))
+    start_date: Optional[dateType] = Field(
+        default=None,
+        description=QUERY_DESCRIPTIONS.get("start_date", ""),
+    )
+    end_date: Optional[dateType] = Field(
+        default=None,
+        description=QUERY_DESCRIPTIONS.get("end_date", ""),
+    )
 
     @field_validator("symbol", mode="before", check_fields=False)
     @classmethod
-    def upper_symbol(cls, v: Union[str, List[str], Set[str]]):
+    def upper_symbol(cls, v: str) -> str:
         """Convert symbol to uppercase."""
-        if isinstance(v, str):
-            return v.upper()
-        return ",".join([symbol.upper() for symbol in list(v)])
+        return v.upper()
 
 
 class ExecutiveCompensationData(Data):

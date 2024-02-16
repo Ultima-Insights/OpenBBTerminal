@@ -23,12 +23,14 @@ from openbb_fmp.models.economic_calendar import FMPEconomicCalendarFetcher
 from openbb_fmp.models.equity_historical import FMPEquityHistoricalFetcher
 from openbb_fmp.models.equity_ownership import FMPEquityOwnershipFetcher
 from openbb_fmp.models.equity_peers import FMPEquityPeersFetcher
+from openbb_fmp.models.equity_profile import FMPEquityProfileFetcher
 from openbb_fmp.models.equity_quote import FMPEquityQuoteFetcher
 from openbb_fmp.models.equity_screener import FMPEquityScreenerFetcher
 from openbb_fmp.models.equity_valuation_multiples import (
     FMPEquityValuationMultiplesFetcher,
 )
 from openbb_fmp.models.etf_countries import FMPEtfCountriesFetcher
+from openbb_fmp.models.etf_equity_exposure import FMPEtfEquityExposureFetcher
 from openbb_fmp.models.etf_holdings import FMPEtfHoldingsFetcher
 from openbb_fmp.models.etf_holdings_date import FMPEtfHoldingsDateFetcher
 from openbb_fmp.models.etf_holdings_performance import FMPEtfHoldingsPerformanceFetcher
@@ -44,6 +46,7 @@ from openbb_fmp.models.historical_splits import FMPHistoricalSplitsFetcher
 from openbb_fmp.models.income_statement import FMPIncomeStatementFetcher
 from openbb_fmp.models.income_statement_growth import FMPIncomeStatementGrowthFetcher
 from openbb_fmp.models.index_constituents import FMPIndexConstituentsFetcher
+from openbb_fmp.models.index_historical import FMPIndexHistoricalFetcher
 from openbb_fmp.models.insider_trading import FMPInsiderTradingFetcher
 from openbb_fmp.models.institutional_ownership import FMPInstitutionalOwnershipFetcher
 from openbb_fmp.models.key_executives import FMPKeyExecutivesFetcher
@@ -89,10 +92,12 @@ fmp_provider = Provider(
         "EquityHistorical": FMPEquityHistoricalFetcher,
         "EquityOwnership": FMPEquityOwnershipFetcher,
         "EquityPeers": FMPEquityPeersFetcher,
+        "EquityInfo": FMPEquityProfileFetcher,
         "EquityQuote": FMPEquityQuoteFetcher,
         "EquityScreener": FMPEquityScreenerFetcher,
         "EquityValuationMultiples": FMPEquityValuationMultiplesFetcher,
         "EtfCountries": FMPEtfCountriesFetcher,
+        "EtfEquityExposure": FMPEtfEquityExposureFetcher,
         "EtfHoldings": FMPEtfHoldingsFetcher,
         "EtfHoldingsDate": FMPEtfHoldingsDateFetcher,
         "EtfHoldingsPerformance": FMPEtfHoldingsPerformanceFetcher,
@@ -108,6 +113,7 @@ fmp_provider = Provider(
         "IncomeStatement": FMPIncomeStatementFetcher,
         "IncomeStatementGrowth": FMPIncomeStatementGrowthFetcher,
         "IndexConstituents": FMPIndexConstituentsFetcher,
+        "IndexHistorical": FMPIndexHistoricalFetcher,
         "InsiderTrading": FMPInsiderTradingFetcher,
         "InstitutionalOwnership": FMPInstitutionalOwnershipFetcher,
         "KeyExecutives": FMPKeyExecutivesFetcher,

@@ -1,6 +1,5 @@
 """FMP Currency Historical Price Model."""
 
-
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
@@ -10,6 +9,7 @@ from openbb_core.provider.standard_models.currency_historical import (
     CurrencyHistoricalData,
     CurrencyHistoricalQueryParams,
 )
+from openbb_core.provider.utils.descriptions import DATA_DESCRIPTIONS
 from openbb_fmp.utils.helpers import get_data_many, get_querystring
 from pydantic import Field
 
@@ -22,16 +22,16 @@ class FMPCurrencyHistoricalQueryParams(CurrencyHistoricalQueryParams):
 
     __alias_dict__ = {"start_date": "from", "end_date": "to"}
 
-    interval: Literal[
-        "1min", "5min", "15min", "30min", "1hour", "4hour", "1day"
-    ] = Field(default="1day", description="Data granularity.")
+    interval: Literal["1min", "5min", "15min", "30min", "1hour", "4hour", "1day"] = (
+        Field(default="1day", description="Data granularity.")
+    )
 
 
 class FMPCurrencyHistoricalData(CurrencyHistoricalData):
     """FMP Currency Historical Price Data."""
 
     adj_close: Optional[float] = Field(
-        default=None, description="Adjusted Close Price of the symbol."
+        default=None, description=DATA_DESCRIPTIONS.get("adj_close", "")
     )
     unadjusted_volume: Optional[float] = Field(
         default=None, description="Unadjusted volume of the symbol."
@@ -99,4 +99,12 @@ class FMPCurrencyHistoricalFetcher(
         query: FMPCurrencyHistoricalQueryParams, data: List[Dict], **kwargs: Any
     ) -> List[FMPCurrencyHistoricalData]:
         """Return the transformed data."""
+        # pylint: disable=unused-argument
+        data = [
+            d
+            for d in data
+            if d.get("vwap") != 0
+            and d.get("change") != 0
+            and d.get("changeOverTime") != 0
+        ]
         return [FMPCurrencyHistoricalData.model_validate(d) for d in data]

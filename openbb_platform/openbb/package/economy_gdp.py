@@ -1,14 +1,13 @@
 ### THIS FILE IS AUTO-GENERATED. DO NOT EDIT. ###
 
 import datetime
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from openbb_core.app.model.custom_parameter import OpenBBCustomParameter
 from openbb_core.app.model.obbject import OBBject
 from openbb_core.app.static.container import Container
-from openbb_core.app.static.decorators import validate
-from openbb_core.app.static.filters import filter_inputs
-from openbb_core.provider.abstract.data import Data
+from openbb_core.app.static.utils.decorators import validate
+from openbb_core.app.static.utils.filters import filter_inputs
 from typing_extensions import Annotated
 
 
@@ -51,16 +50,16 @@ class ROUTER_economy_gdp(Container):
         ] = "real",
         provider: Optional[Literal["oecd"]] = None,
         **kwargs
-    ) -> OBBject[List[Data]]:
+    ) -> OBBject:
         """Forecasted GDP Data.
 
         Parameters
         ----------
         period : Literal['quarter', 'annual']
             Time period of the data to return. Units for nominal GDP period. Either quarter or annual.
-        start_date : Optional[datetime.date]
+        start_date : Union[datetime.date, None, str]
             Start date of the data, in YYYY-MM-DD format.
-        end_date : Optional[datetime.date]
+        end_date : Union[datetime.date, None, str]
             End date of the data, in YYYY-MM-DD format.
         type : Literal['nominal', 'real']
             Type of GDP to get forecast of. Either nominal or real.
@@ -98,22 +97,24 @@ class ROUTER_economy_gdp(Container):
         >>> obb.economy.gdp.forecast(period="annual", type="real")
         """  # noqa: E501
 
-        inputs = filter_inputs(
-            provider_choices={
-                "provider": provider,
-            },
-            standard_params={
-                "period": period,
-                "start_date": start_date,
-                "end_date": end_date,
-                "type": type,
-            },
-            extra_params=kwargs,
-        )
-
         return self._run(
             "/economy/gdp/forecast",
-            **inputs,
+            **filter_inputs(
+                provider_choices={
+                    "provider": self._get_provider(
+                        provider,
+                        "/economy/gdp/forecast",
+                        ("oecd",),
+                    )
+                },
+                standard_params={
+                    "period": period,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                    "type": type,
+                },
+                extra_params=kwargs,
+            )
         )
 
     @validate
@@ -139,16 +140,16 @@ class ROUTER_economy_gdp(Container):
         ] = None,
         provider: Optional[Literal["oecd"]] = None,
         **kwargs
-    ) -> OBBject[List[Data]]:
+    ) -> OBBject:
         """Nominal GDP Data.
 
         Parameters
         ----------
         units : Literal['usd', 'usd_cap']
             The unit of measurement for the data. Units to get nominal GDP in. Either usd or usd_cap indicating per capita.
-        start_date : Optional[datetime.date]
+        start_date : Union[datetime.date, None, str]
             Start date of the data, in YYYY-MM-DD format.
-        end_date : Optional[datetime.date]
+        end_date : Union[datetime.date, None, str]
             End date of the data, in YYYY-MM-DD format.
         provider : Optional[Literal['oecd']]
             The provider to use for the query, by default None.
@@ -184,21 +185,23 @@ class ROUTER_economy_gdp(Container):
         >>> obb.economy.gdp.nominal(units="usd")
         """  # noqa: E501
 
-        inputs = filter_inputs(
-            provider_choices={
-                "provider": provider,
-            },
-            standard_params={
-                "units": units,
-                "start_date": start_date,
-                "end_date": end_date,
-            },
-            extra_params=kwargs,
-        )
-
         return self._run(
             "/economy/gdp/nominal",
-            **inputs,
+            **filter_inputs(
+                provider_choices={
+                    "provider": self._get_provider(
+                        provider,
+                        "/economy/gdp/nominal",
+                        ("oecd",),
+                    )
+                },
+                standard_params={
+                    "units": units,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                },
+                extra_params=kwargs,
+            )
         )
 
     @validate
@@ -224,16 +227,16 @@ class ROUTER_economy_gdp(Container):
         ] = None,
         provider: Optional[Literal["oecd"]] = None,
         **kwargs
-    ) -> OBBject[List[Data]]:
+    ) -> OBBject:
         """Real GDP Data.
 
         Parameters
         ----------
         units : Literal['idx', 'qoq', 'yoy']
             The unit of measurement for the data. Either idx (indicating 2015=100), qoq (previous period) or yoy (same period, previous year).)
-        start_date : Optional[datetime.date]
+        start_date : Union[datetime.date, None, str]
             Start date of the data, in YYYY-MM-DD format.
-        end_date : Optional[datetime.date]
+        end_date : Union[datetime.date, None, str]
             End date of the data, in YYYY-MM-DD format.
         provider : Optional[Literal['oecd']]
             The provider to use for the query, by default None.
@@ -269,19 +272,21 @@ class ROUTER_economy_gdp(Container):
         >>> obb.economy.gdp.real(units="yoy")
         """  # noqa: E501
 
-        inputs = filter_inputs(
-            provider_choices={
-                "provider": provider,
-            },
-            standard_params={
-                "units": units,
-                "start_date": start_date,
-                "end_date": end_date,
-            },
-            extra_params=kwargs,
-        )
-
         return self._run(
             "/economy/gdp/real",
-            **inputs,
+            **filter_inputs(
+                provider_choices={
+                    "provider": self._get_provider(
+                        provider,
+                        "/economy/gdp/real",
+                        ("oecd",),
+                    )
+                },
+                standard_params={
+                    "units": units,
+                    "start_date": start_date,
+                    "end_date": end_date,
+                },
+                extra_params=kwargs,
+            )
         )
